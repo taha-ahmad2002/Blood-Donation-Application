@@ -1,16 +1,10 @@
 # Life Sync
+## Overview
+The AI-enabled Blood Donation Mobile Application is made in flutter and firebase, designed to address the critical challenge of ensuring timely blood donations across the country. The platform intelligently matches patients with the most suitable blood donors using multiple criteria such as age, blood group, weight, and donation history. 
 
-A new Flutter project.
+Beyond donor-matching, the application fosters direct communication by enabling users to chat with one another. Users can create multiple blood requests, while donors are limited to making a single active donation offer at a time. To enhance convenience, donors have the flexibility to switch their donor availability mode ON or OFF based on their current status.
 
-## Getting Started
+This smart and user-friendly solution not only streamlines the process of finding compatible donors but also promotes a more reliable and efficient blood donation ecosystem.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
