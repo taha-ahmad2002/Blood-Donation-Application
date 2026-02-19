@@ -49,24 +49,35 @@ flutter run
 
 ## Screenshots
 
-**Home**  
-![Home](https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/home.jpeg?raw=true)
+### Home
+<p align="center">
+  <img src="https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/home.jpeg?raw=true" width="280"/>
+</p>
 
-**Login Page**  
-![Login](https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/login.jpeg?raw=true)
+### Login Page
+<p align="center">
+  <img src="https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/login.jpeg?raw=true" width="280"/>
+</p>
 
-**Nearby Donors**  
-![Nearby Donors](https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/nearby%20donors.jpeg?raw=true)
+### Nearby Donors
+<p align="center">
+  <img src="https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/nearby%20donors.jpeg?raw=true" width="280"/>
+</p>
 
-**Profile Page**  
-![Profile](https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/profile.jpeg?raw=true)
+### Profile Page
+<p align="center">
+  <img src="https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/profile.jpeg?raw=true" width="280"/>
+</p>
 
-**Settings Page**  
-![Settings](https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/settings.jpeg?raw=true)
+### Settings Page
+<p align="center">
+  <img src="https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/settings.jpeg?raw=true" width="280"/>
+</p>
 
-**Donors Form**  
-![Donor Form](https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/donor%20form.jpeg?raw=true)
-
+### Donors Form
+<p align="center">
+  <img src="https://github.com/taha-ahmad2002/Blood-Donation-Application/blob/master/assets/screenshots/donor%20form.jpeg?raw=true" width="280"/>
+</p>
 
 
 
