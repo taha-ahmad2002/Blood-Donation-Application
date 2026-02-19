@@ -159,7 +159,7 @@ class DonorDetailsState extends State<DonorDetails> {
   // Styled Email Container
   Widget _buildEmailContainer(String email) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.red.shade900, Colors.red.shade400],
@@ -176,24 +176,26 @@ class DonorDetailsState extends State<DonorDetails> {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          const Icon(Icons.email, color: Colors.white),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              email,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+      child: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.email, color: Colors.white),
+            const SizedBox(width: 10),
+            Flexible(
+              child: Text(
+                email,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
               ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              softWrap: false,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

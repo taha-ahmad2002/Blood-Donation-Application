@@ -89,18 +89,18 @@ flutter_launcher_icons:
   image_path: "assets/images/icon.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
 
-#  web:
-#    generate: true
-#    image_path: "path/to/image.png"
-#    background_color: "#hexcode"
-#    theme_color: "#hexcode"
-#  windows:
-#    generate: true
-#    image_path: "path/to/image.png"
-#    icon_size: 48 # min:48, max:256, default: 48
-#  macos:
-#    generate: true
-#    image_path: "path/to/image.png"
+  #  web:
+  #    generate: true
+  #    image_path: "path/to/image.png"
+  #    background_color: "#hexcode"
+  #    theme_color: "#hexcode"
+  #  windows:
+  #    generate: true
+  #    image_path: "path/to/image.png"
+  #    icon_size: 48 # min:48, max:256, default: 48
+  #  macos:
+  #    generate: true
+  #    image_path: "path/to/image.png"
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -116,11 +116,10 @@ flutter_launcher_icons:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/drop.jpg
-    - assets/bloodbag.png
-    - assets/list.png
-    - assets/bag.png
-    - assets/form.png
+    - assets/images/drop.jpg
+    - assets/images/bloodbag.png
+    - assets/images/bag.png
+    - assets/images/form.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

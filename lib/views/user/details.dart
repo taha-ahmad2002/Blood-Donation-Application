@@ -114,48 +114,47 @@ class DetailsState extends State<Details> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 15),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.red.shade900, Colors.red.shade400],
-                          // Gradient effect
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        // Smooth rounded edges
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.red.withOpacity(0.3),
-                            blurRadius: 8,
-                            spreadRadius: 2,
-                            offset: const Offset(2, 4), // Subtle shadow effect
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 15),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.red.shade900, Colors.red.shade400],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.email, color: Colors.white),
-                          // White email icon
-                          const SizedBox(width: 10),
-                          // Spacing
-                          Expanded(
-                            child: Text(
-                              widget.email ?? auth.currentUser?.email,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white, // White text for contrast
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              // Prevents overflow
-                              maxLines: 3,
-                              softWrap: false,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red.withOpacity(0.3),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                              offset: const Offset(2, 4),
                             ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.email, color: Colors.white),
+                              const SizedBox(width: 10),
+                              Flexible(
+                                child: Text(
+                                  widget.email ?? auth.currentUser?.email ?? "No email",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
       

@@ -1,8 +1,49 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/chat_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+// Responsive helper class
+class ResponsiveHelper {
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 600;
+
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 1200;
+
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1200;
+
+  static double getResponsivePadding(BuildContext context) {
+    if (isMobile(context)) return 12;
+    if (isTablet(context)) return 16;
+    return 20;
+  }
+
+  static double getResponsiveFontSize(
+    BuildContext context, {
+    required double mobileSize,
+    double? tabletSize,
+    double? desktopSize,
+  }) {
+    if (isMobile(context)) return mobileSize;
+    if (isTablet(context)) return tabletSize ?? mobileSize * 1.1;
+    return desktopSize ?? mobileSize * 1.2;
+  }
+
+  static double getResponsiveImageSize(
+    BuildContext context, {
+    required double mobileSize,
+    double? tabletSize,
+    double? desktopSize,
+  }) {
+    if (isMobile(context)) return mobileSize;
+    if (isTablet(context)) return tabletSize ?? mobileSize * 1.2;
+    return desktopSize ?? mobileSize * 1.4;
+  }
+}
 
 class ChatScreen extends StatefulWidget {
   final String receiverId;
@@ -59,7 +100,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = ResponsiveHelper.isMobile(context);
+    final responsivePadding = ResponsiveHelper.getResponsivePadding(context);
+    final appBarTitleFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 16, tabletSize: 18, desktopSize: 20);
+    final messageFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 14, tabletSize: 15, desktopSize: 16);
+    final timestampFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 11, tabletSize: 12, desktopSize: 13);
+    final avatarRadius = ResponsiveHelper.getResponsiveImageSize(context, mobileSize: 20, tabletSize: 24, desktopSize: 28);
+    final inputFieldPadding = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 12, tabletSize: 14, desktopSize: 16);
+    final sendButtonRadius = ResponsiveHelper.getResponsiveImageSize(context, mobileSize: 24, tabletSize: 28, desktopSize: 32);
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -70,40 +118,42 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Row(
           children: [
             _isLoading
-                ? const CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.grey,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            )
+                ? CircleAvatar(
+                    radius: avatarRadius,
+                    backgroundColor: Colors.grey,
+                    child: const CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
                 : CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.deepPurple[200],
-              child: ClipOval(
-                child: _receiverProfilePicUrl != null &&
-                    _receiverProfilePicUrl!.isNotEmpty
-                    ? CachedNetworkImage(
-                  imageUrl: _receiverProfilePicUrl!,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                  const CircularProgressIndicator(
-                      color: Colors.white, strokeWidth: 2),
-                  errorWidget: (context, url, error) =>
-                  const Icon(Icons.person, color: Colors.white),
-                )
-                    : const Icon(Icons.person, color: Colors.white),
-              ),
-            ),
-            const SizedBox(width: 10),
+                    radius: avatarRadius,
+                    backgroundColor: Colors.deepPurple[200],
+                    child: ClipOval(
+                      child: _receiverProfilePicUrl != null &&
+                          _receiverProfilePicUrl!.isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: _receiverProfilePicUrl!,
+                              width: avatarRadius * 2,
+                              height: avatarRadius * 2,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  const CircularProgressIndicator(
+                                      color: Colors.white, strokeWidth: 2),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.person, color: Colors.white),
+                            )
+                          : const Icon(Icons.person, color: Colors.white),
+                    ),
+                  ),
+            SizedBox(width: responsivePadding * 0.5),
             Expanded(
               child: Text(
                 widget.receiverName,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 18),
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: appBarTitleFontSize,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -117,15 +167,22 @@ class _ChatScreenState extends State<ChatScreen> {
               stream: _chatService.getMessages(widget.receiverId),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                    ),
+                  );
                 }
 
                 var messages = snapshot.data!.docs;
 
                 return ListView.builder(
                   padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.04, vertical: 10),
+                    horizontal: responsivePadding,
+                    vertical: responsivePadding * 0.5,
+                  ),
                   itemCount: messages.length,
+                  cacheExtent: 500,
                   itemBuilder: (context, index) {
                     var message = messages[index];
                     bool isSender =
@@ -136,11 +193,16 @@ class _ChatScreenState extends State<ChatScreen> {
                           ? Alignment.centerRight
                           : Alignment.centerLeft,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: inputFieldPadding,
+                          vertical: inputFieldPadding * 0.75,
+                        ),
+                        margin: EdgeInsets.symmetric(
+                          vertical: responsivePadding * 0.3,
+                        ),
                         constraints: BoxConstraints(
-                            maxWidth: screenWidth * 0.75),
+                          maxWidth: MediaQuery.of(context).size.width * 0.75,
+                        ),
                         decoration: BoxDecoration(
                           color: isSender
                               ? Colors.deepPurple[400]
@@ -149,9 +211,9 @@ class _ChatScreenState extends State<ChatScreen> {
                             topLeft: const Radius.circular(16),
                             topRight: const Radius.circular(16),
                             bottomLeft:
-                            Radius.circular(isSender ? 16 : 0),
+                                Radius.circular(isSender ? 16 : 0),
                             bottomRight:
-                            Radius.circular(isSender ? 0 : 16),
+                                Radius.circular(isSender ? 0 : 16),
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -168,19 +230,20 @@ class _ChatScreenState extends State<ChatScreen> {
                           children: [
                             Text(
                               message['message'],
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 color:
-                                isSender ? Colors.white : Colors.black87,
-                                fontSize: screenWidth * 0.04,
+                                    isSender ? Colors.white : Colors.black87,
+                                fontSize: messageFontSize,
+                                height: 1.5,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: responsivePadding * 0.2),
                             Text(
                               _formatTimestamp(message['timestamp']),
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 color:
-                                isSender ? Colors.white70 : Colors.black54,
-                                fontSize: screenWidth * 0.03,
+                                    isSender ? Colors.white70 : Colors.black54,
+                                fontSize: timestampFontSize,
                               ),
                             ),
                           ],
@@ -194,7 +257,9 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           Container(
             padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.03, vertical: 10),
+              horizontal: responsivePadding * 0.75,
+              vertical: responsivePadding * 0.5,
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -209,7 +274,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: inputFieldPadding),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(30),
@@ -217,21 +282,37 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: TextField(
                       controller: _messageController,
                       textCapitalization: TextCapitalization.sentences,
-                      decoration: const InputDecoration(
+                      style: GoogleFonts.poppins(
+                        fontSize: messageFontSize,
+                        color: Colors.black87,
+                      ),
+                      decoration: InputDecoration(
                         hintText: "Type a message...",
+                        hintStyle: GoogleFonts.poppins(
+                          fontSize: messageFontSize * 0.9,
+                          color: Colors.black54,
+                        ),
                         border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: inputFieldPadding * 0.5,
+                        ),
                       ),
                       onSubmitted: (_) => sendMessage(),
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: responsivePadding * 0.5),
                 CircleAvatar(
                   backgroundColor: Colors.deepPurple,
-                  radius: 24,
+                  radius: sendButtonRadius,
                   child: IconButton(
-                    icon: const Icon(Icons.send, color: Colors.white),
+                    icon: Icon(
+                      Icons.send,
+                      color: Colors.white,
+                      size: sendButtonRadius * 0.8,
+                    ),
                     onPressed: sendMessage,
+                    iconSize: sendButtonRadius * 1.2,
                   ),
                 ),
               ],

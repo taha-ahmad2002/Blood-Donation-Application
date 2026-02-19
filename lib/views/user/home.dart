@@ -11,6 +11,53 @@ import 'package:badges/badges.dart' as badges; // Import the badges package
 // Assuming this is your global variable.  It's better to manage this with a state management solution.
 int notificationCount = 0; //changed to 3 to show the badge
 
+// Responsive helper class
+class ResponsiveHelper {
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 600;
+
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 1200;
+
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1200;
+
+  static double getResponsivePadding(BuildContext context) {
+    if (isMobile(context)) return 16;
+    if (isTablet(context)) return 24;
+    return 32;
+  }
+
+  static double getResponsiveFontSize(
+    BuildContext context, {
+    required double mobileSize,
+    double? tabletSize,
+    double? desktopSize,
+  }) {
+    if (isMobile(context)) return mobileSize;
+    if (isTablet(context)) return tabletSize ?? mobileSize * 1.2;
+    return desktopSize ?? mobileSize * 1.4;
+  }
+
+  static double getResponsiveImageSize(
+    BuildContext context, {
+    required double mobileSize,
+    double? tabletSize,
+    double? desktopSize,
+  }) {
+    if (isMobile(context)) return mobileSize;
+    if (isTablet(context)) return tabletSize ?? mobileSize * 1.3;
+    return desktopSize ?? mobileSize * 1.6;
+  }
+
+  static double getResponsiveCardWidth(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (isMobile(context)) return (width - 60) / 2;
+    if (isTablet(context)) return (width - 80) / 3;
+    return 200;
+  }
+}
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -23,6 +70,15 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+    final responsivePadding = ResponsiveHelper.getResponsivePadding(context);
+    final logoSize = ResponsiveHelper.getResponsiveImageSize(context, mobileSize: 80, tabletSize: 110, desktopSize: 140);
+    final titleFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 24, tabletSize: 32, desktopSize: 40);
+    final subtitleFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 11, tabletSize: 13, desktopSize: 15);
+    final headerFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 20, tabletSize: 28, desktopSize: 36);
+    final taglineFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 14, tabletSize: 18, desktopSize: 22);
+    final notificationIconSize = ResponsiveHelper.getResponsiveImageSize(context, mobileSize: 28, tabletSize: 32, desktopSize: 40);
+
     return Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
@@ -38,174 +94,197 @@ class _HomeState extends State<Home> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16), // Increased horizontal padding
-            child: Column(
-              children: [
-                // Top row with notification
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: () => Get.offAll(AllRequests()),
-                      child: badges.Badge(
-                        badgeContent: Text(
-                          '$notificationCount',
-                          style: const TextStyle(fontSize: 10, color: Colors.white),
-                        ),
-                        showBadge: notificationCount > 0, // Show badge if count > 0
-                        badgeAnimation: const badges.BadgeAnimation.fade(
-                          animationDuration: Duration(milliseconds: 300),
-                          toAnimate: true,
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.all(12), // Increased padding
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.red.shade100,
-                                blurRadius: 12, // Increased blur radius
-                                offset: const Offset(4, 6), // Increased offset
-                              ),
-                            ],
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: responsivePadding, vertical: responsivePadding * 0.8),
+              child: Column(
+                children: [
+                  // Top row with logo and notification
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Logo on left
+                      Image.asset('assets/images/bloodbag.png', height: logoSize * 0.6, width: logoSize * 0.6),
+
+                      // Notification on right
+                      GestureDetector(
+                        onTap: () => Get.offAll(AllRequests()),
+                        child: badges.Badge(
+                          badgeContent: Text(
+                            '$notificationCount',
+                            style: const TextStyle(fontSize: 9, color: Colors.white),
                           ),
-                          child: Icon(Icons.bloodtype,
-                              color: Colors.red[900], size: 32), // Increased size
+                          showBadge: notificationCount > 0,
+                          badgeAnimation: const badges.BadgeAnimation.fade(
+                            animationDuration: Duration(milliseconds: 300),
+                            toAnimate: true,
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.all(responsivePadding * 0.6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.red.shade100,
+                                  blurRadius: 12,
+                                  offset: const Offset(4, 6),
+                                ),
+                              ],
+                            ),
+                            child: Icon(Icons.bloodtype,
+                                color: Colors.red[900], size: notificationIconSize),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
+                    ],
+                  ),
+                  SizedBox(height: responsivePadding * 1.5),
 
-                // Logo and app title
-                Row(
-                  children: [
-                    Image.asset('assets/bloodbag.png', height: 100, width: 100), // Increased size
-                    const SizedBox(width: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  // App title centered
+                  Center(
+                    child: Column(
                       children: [
                         Text(
                           'LIFE SYNC',
-                          style: GoogleFonts.poppins( // Using Google Fonts
-                            fontSize: 32, // Increased font size
-                            fontWeight: FontWeight.w800, // Use a heavier font weight
+                          style: GoogleFonts.poppins(
+                            fontSize: titleFontSize,
+                            fontWeight: FontWeight.w800,
                             color: Colors.red[900],
-                            letterSpacing: 3, // Increased letter spacing
+                            letterSpacing: 2,
                           ),
                         ),
                         Text(
-                          'Donate Blood, Save Lives', // Changed slogan
+                          'Donate Blood, Save Lives',
                           style: GoogleFonts.poppins(
-                            fontSize: 13, // Increased font size
-                            color: Colors.black87, // Darker shade
+                            fontSize: subtitleFontSize,
+                            color: Colors.black87,
                             fontStyle: FontStyle.italic,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 50),
+                  ),
+                  SizedBox(height: responsivePadding * 2),
 
-                // Services header
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Center(
+                  // Services header
+                  Center(
                     child: Text(
                       'SERVICES',
                       style: GoogleFonts.poppins(
-                        fontSize: 28,
+                        fontSize: headerFontSize,
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 5,
+                        letterSpacing: 3,
                         color: Colors.black87,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 30),
+                  SizedBox(height: responsivePadding * 1.5),
 
-                // Services section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ServiceCard(
-                      imagePath: 'assets/form.png',
-                      title: 'BECOME A DONOR',
-                      buttonText: 'REGISTER',
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => RequestDonor()));
-                      },
-                    ),
-                    ServiceCard(
-                      imagePath: 'assets/drop.jpg',
-                      title: 'FIND A DONOR',
-                      buttonText: 'FIND',
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => AllDonors()));
-                      },
-                    ),
-                  ],
-                ),
+                  // Services section
+                  isMobile
+                      ? Column(
+                          children: [
+                            ServiceCard(
+                              imagePath: 'assets/images/form.png',
+                              title: 'BECOME A DONOR',
+                              buttonText: 'REGISTER',
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) => RequestDonor()));
+                              },
+                            ),
+                            SizedBox(height: responsivePadding),
+                            ServiceCard(
+                              imagePath: 'assets/images/drop.jpg',
+                              title: 'FIND A DONOR',
+                              buttonText: 'FIND',
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) => AllDonors()));
+                              },
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ServiceCard(
+                              imagePath: 'assets/images/form.png',
+                              title: 'BECOME A DONOR',
+                              buttonText: 'REGISTER',
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) => RequestDonor()));
+                              },
+                            ),
+                            ServiceCard(
+                              imagePath: 'assets/images/drop.jpg',
+                              title: 'FIND A DONOR',
+                              buttonText: 'FIND',
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) => AllDonors()));
+                              },
+                            ),
+                          ],
+                        ),
 
-                const Spacer(),
-                Text(
-                  'Every drop counts, be a hero.', // Changed tagline
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    color: Colors.black54,
-                    fontStyle: FontStyle.italic, // Added italic
+                  SizedBox(height: responsivePadding * 2),
+                  Text(
+                    'Every drop counts, be a hero.',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: taglineFontSize,
+                      color: Colors.black54,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-
-                // Bottom Navigation
-                NavigationBar(
-                  height: 70, // Increased height
-                  backgroundColor: Colors.white,
-                  indicatorColor: Colors.red[100],
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (index) {
-                    setState(() => selectedIndex = index);
-                    switch (index) {
-                      case 0:
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (_) => const Home()));
-                        break;
-                      case 1:
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => AboutUsPage()));
-                        break;
-                      case 2:
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => Profile()));
-                        break;
-                    }
-                  },
-                  destinations: [
-                    NavigationDestination(
-                      icon: const Icon(Icons.home, size: 30), // Increased size
-                      label: 'Home',
-                    ),
-                    NavigationDestination(
-                      icon: const Icon(Icons.info_outline, size: 30),
-                      label: 'About',
-                    ),
-                    NavigationDestination(
-                      icon: const Icon(Icons.person, size: 30),
-                      label: 'Profile',
-                    ),
-                  ],
-                ),
-              ],
+                  SizedBox(height: responsivePadding * 3),
+                ],
+              ),
             ),
           ),
         ),
+      ),
+      // Fixed Navigation Bar at Bottom
+      bottomNavigationBar: NavigationBar(
+        height: isMobile ? 65 : 75,
+        backgroundColor: Colors.white,
+        indicatorColor: Colors.red[100],
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() => selectedIndex = index);
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const Home()));
+              break;
+            case 1:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => AboutUsPage()));
+              break;
+            case 2:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => Profile()));
+              break;
+          }
+        },
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.home, size: isMobile ? 24 : 28),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.info_outline, size: isMobile ? 24 : 28),
+            label: 'About',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person, size: isMobile ? 24 : 28),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
@@ -227,47 +306,59 @@ class ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cardWidth = ResponsiveHelper.getResponsiveCardWidth(context);
+    final imageSizeValue = ResponsiveHelper.getResponsiveImageSize(context, mobileSize: 60, tabletSize: 80, desktopSize: 100);
+    final titleFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 13, tabletSize: 15, desktopSize: 17);
+    final buttonFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 12, tabletSize: 14, desktopSize: 16);
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Container(
-      width: 150, // Increased width
-      padding: const EdgeInsets.all(18), // Increased padding
+      width: cardWidth,
+      padding: EdgeInsets.all(isMobile ? 14 : 18),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.95),
-        borderRadius: BorderRadius.circular(20), // Increased radius
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.red.shade100,
-            blurRadius: 12, // Increased blur radius
-            offset: const Offset(4, 6), // Increased offset
+            blurRadius: 12,
+            offset: const Offset(4, 6),
           ),
         ],
       ),
       child: Column(
         children: [
-          Image.asset(imagePath, height: 70), // Increased height
-          const SizedBox(height: 15), // Increased spacing
+          Image.asset(imagePath, height: imageSizeValue, fit: BoxFit.contain),
+          SizedBox(height: isMobile ? 12 : 15),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins( // Using Google Fonts
-              fontSize: 15, // Increased font size
-              fontWeight: FontWeight.w600, // Use semibold
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.poppins(
+              fontSize: titleFontSize,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 12), // Increased spacing
+          SizedBox(height: isMobile ? 10 : 12),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red[900],
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10), // Increased radius
+                borderRadius: BorderRadius.circular(8),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10), //added padding
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 14 : 16,
+                vertical: isMobile ? 8 : 10,
+              ),
             ),
             onPressed: onPressed,
             child: Text(
               buttonText,
-              style: GoogleFonts.poppins( // Using Google Fonts
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
+                fontSize: buttonFontSize,
               ),
             ),
           ),

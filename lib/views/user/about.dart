@@ -1,6 +1,47 @@
 import 'package:blood/views/user/drawer.dart';
 import 'package:blood/views/user/payment_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+// Responsive helper class
+class ResponsiveHelper {
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 600;
+
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 1200;
+
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1200;
+
+  static double getResponsivePadding(BuildContext context) {
+    if (isMobile(context)) return 16;
+    if (isTablet(context)) return 24;
+    return 32;
+  }
+
+  static double getResponsiveFontSize(
+    BuildContext context, {
+    required double mobileSize,
+    double? tabletSize,
+    double? desktopSize,
+  }) {
+    if (isMobile(context)) return mobileSize;
+    if (isTablet(context)) return tabletSize ?? mobileSize * 1.2;
+    return desktopSize ?? mobileSize * 1.4;
+  }
+
+  static double getResponsiveImageSize(
+    BuildContext context, {
+    required double mobileSize,
+    double? tabletSize,
+    double? desktopSize,
+  }) {
+    if (isMobile(context)) return mobileSize;
+    if (isTablet(context)) return tabletSize ?? mobileSize * 1.3;
+    return desktopSize ?? mobileSize * 1.6;
+  }
+}
 
 class AboutUsPage extends StatefulWidget {
   @override
@@ -18,11 +59,24 @@ class _AboutUsPageState extends State<AboutUsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+    final responsivePadding = ResponsiveHelper.getResponsivePadding(context);
+    final titleFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 26, tabletSize: 32, desktopSize: 40);
+    final sectionTitleFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 20, tabletSize: 24, desktopSize: 28);
+    final bodyFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 16, tabletSize: 17, desktopSize: 18);
+    final smallFontSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 14, tabletSize: 15, desktopSize: 16);
+    final imageSize = ResponsiveHelper.getResponsiveImageSize(context, mobileSize: 120, tabletSize: 150, desktopSize: 180);
+    final appBarTitleSize = ResponsiveHelper.getResponsiveFontSize(context, mobileSize: 20, tabletSize: 24, desktopSize: 28);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'About Us',
-          style: TextStyle(color: Colors.white),
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: appBarTitleSize,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.red[900],
@@ -31,60 +85,70 @@ class _AboutUsPageState extends State<AboutUsPage> {
           color: Colors.white,
         ),
       ),
-      drawer:  SideDrawer(),
+      drawer: SideDrawer(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(responsivePadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 20),
-            Image.asset('assets/bag.png', height: 150),
-            const SizedBox(height: 20),
+            SizedBox(height: responsivePadding),
+            Image.asset('assets/images/bag.png', height: imageSize),
+            SizedBox(height: responsivePadding * 1.5),
             Text(
               'Welcome to Life Sync',
-              style: TextStyle(
-                fontSize: 26,
+              style: GoogleFonts.poppins(
+                fontSize: titleFontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.red[900],
                 letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 10),
-            const Text(
+            SizedBox(height: responsivePadding * 0.5),
+            Text(
               'Life Sync is dedicated to connecting blood donors with those in need. Our mission is to make blood donation easier, faster, and more accessible to save lives.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.black87),
+              style: GoogleFonts.poppins(
+                fontSize: bodyFontSize,
+                color: Colors.black87,
+                height: 1.5,
+              ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: responsivePadding * 1.5),
             Text(
               'Why Choose Us?',
-              style: TextStyle(
-                fontSize: 20,
+              style: GoogleFonts.poppins(
+                fontSize: sectionTitleFontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.red[900],
               ),
             ),
-            const SizedBox(height: 10),
-            const BulletPoint(text: 'Find and connect with nearby donors instantly'),
-            const BulletPoint(text: 'Get notified about urgent blood requests'),
-            const BulletPoint(text: 'Easy and quick donor registration process'),
-            const BulletPoint(text: 'Secure and trusted donation platform'),
-            const SizedBox(height: 30),
+            SizedBox(height: responsivePadding * 0.8),
+            BulletPoint(text: 'Find and connect with nearby donors instantly', fontSize: bodyFontSize),
+            BulletPoint(text: 'Get notified about urgent blood requests', fontSize: bodyFontSize),
+            BulletPoint(text: 'Easy and quick donor registration process', fontSize: bodyFontSize),
+            BulletPoint(text: 'Secure and trusted donation platform', fontSize: bodyFontSize),
+            SizedBox(height: responsivePadding * 2),
             Text(
               'Blood Group Compatibility',
-              style: TextStyle(
-                fontSize: 20,
+              style: GoogleFonts.poppins(
+                fontSize: sectionTitleFontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.red[900],
               ),
             ),
-            const SizedBox(height: 10),
-            const CompatibilityTable(),
-            const SizedBox(height: 30),
+            SizedBox(height: responsivePadding * 0.8),
+            CompatibilityTable(
+              bodyFontSize: bodyFontSize,
+              smallFontSize: smallFontSize,
+            ),
+            SizedBox(height: responsivePadding * 2),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red[900],
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                padding: EdgeInsets.symmetric(
+                  horizontal: responsivePadding * 2.5,
+                  vertical: responsivePadding * 0.75,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -92,7 +156,14 @@ class _AboutUsPageState extends State<AboutUsPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Back', style: TextStyle(color: Colors.white)),
+              child: Text(
+                'Back',
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: bodyFontSize,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ],
         ),
@@ -104,28 +175,44 @@ class _AboutUsPageState extends State<AboutUsPage> {
 
 class BulletPoint extends StatelessWidget {
   final String text;
-  const BulletPoint({required this.text});
+  final double fontSize;
+
+  const BulletPoint({required this.text, this.fontSize = 16});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(Icons.check_circle, color: Colors.red[900], size: 20),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 16, color: Colors.black87),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.check_circle, color: Colors.red[900], size: fontSize * 1.2),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: GoogleFonts.poppins(
+                fontSize: fontSize,
+                color: Colors.black87,
+                height: 1.5,
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
 class CompatibilityTable extends StatelessWidget {
-  const CompatibilityTable({super.key});
+  final double bodyFontSize;
+  final double smallFontSize;
+
+  const CompatibilityTable({
+    super.key,
+    this.bodyFontSize = 16,
+    this.smallFontSize = 14,
+  });
 
   final List<Map<String, dynamic>> compatibility = const [
     {
@@ -172,46 +259,53 @@ class CompatibilityTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Column(
       children: compatibility
           .map(
             (row) => Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          elevation: 5,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '🩸 Blood Group: ${row['group']}',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Can Donate To: ${row['donate']}',
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
-                Text(
-                  'Can Receive From: ${row['receive']}',
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
-                ElevatedButton(onPressed: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentScreen(),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              margin: EdgeInsets.symmetric(vertical: isMobile ? 8 : 10),
+              elevation: 4,
+              child: Padding(
+                padding: EdgeInsets.all(isMobile ? 10 : 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '🩸 Blood Group: ${row['group']}',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: bodyFontSize,
+                        color: Colors.red[900],
+                      ),
                     ),
-                  );
-                }, child: Text("payments")),
-              ],
+                    SizedBox(height: isMobile ? 6 : 8),
+                    Text(
+                      'Can Donate To: ${row['donate']}',
+                      style: GoogleFonts.poppins(
+                        fontSize: smallFontSize,
+                        color: Colors.black54,
+                        height: 1.4,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Can Receive From: ${row['receive']}',
+                      style: GoogleFonts.poppins(
+                        fontSize: smallFontSize,
+                        color: Colors.black54,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      )
+          )
           .toList(),
     );
   }

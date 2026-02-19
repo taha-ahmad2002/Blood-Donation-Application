@@ -327,7 +327,9 @@ class _NearbyDonorsState extends State<NearbyDonors> {
                           ),
                         ),
                         Text(
-                          "Predicted Willingness: ${(donor['donation_probability'] * 100).toStringAsFixed(1)}%",
+                          donor['donation_probability'] != null
+                              ? "Predicted Willingness: ${(donor['donation_probability'] * 100).toStringAsFixed(1)}%"
+                              : "Predicted Willingness: N/A",
                           style: const TextStyle(color: Colors.green),
                         ),
                         Row(

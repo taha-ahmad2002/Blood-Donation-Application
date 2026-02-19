@@ -12,8 +12,8 @@ if (keystorePropertiesFile.exists()) {
 }
 android {
     namespace = "com.nust.blood"
-    compileSdk = 35
-    ndkVersion = "25.1.8937393"
+    compileSdk = 36
+    ndkVersion = "26.1.10909125"
 
     compileOptions {
         coreLibraryDesugaringEnabled true
