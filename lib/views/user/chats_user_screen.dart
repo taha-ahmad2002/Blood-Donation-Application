@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'chat_screen.dart';
 
 class ChatUsersScreen extends StatefulWidget {
-
   ChatUsersScreen({Key? key}) : super(key: key);
 
   @override
@@ -49,10 +48,48 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
           var chatUsers = snapshot.data!.docs;
 
           if (chatUsers.isEmpty) {
-            return const Center(
-              child: Text(
-                "No chats yet.",
-                style: TextStyle(fontSize: 18, color: Colors.grey),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.message,
+                    size: 80,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "No Messages Yet",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Start a conversation with someone",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back),
+                    label: const Text("Go Back"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             );
           }
@@ -75,34 +112,41 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
                     vertical: screenWidth * 0.025,
                   ),
                   leading: FutureBuilder<DocumentSnapshot>(
-                future: _firestore.collection('users').doc(chatUser['chatWith']).get(),
-                builder: (context, userSnapshot) {
-                  if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    return CircleAvatar(
-                      radius: avatarRadius,
-                      backgroundColor: Colors.grey[300],
-                      child: const Icon(Icons.person, color: Colors.white),
-                    );
-                  }
+                    future: _firestore
+                        .collection('users')
+                        .doc(chatUser['chatWith'])
+                        .get(),
+                    builder: (context, userSnapshot) {
+                      if (userSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return CircleAvatar(
+                          radius: avatarRadius,
+                          backgroundColor: Colors.grey[300],
+                          child: const Icon(Icons.person, color: Colors.white),
+                        );
+                      }
 
-                  final userData = userSnapshot.data?.data() as Map<String, dynamic>?;
+                      final userData =
+                          userSnapshot.data?.data() as Map<String, dynamic>?;
 
-                  final profilePicUrl = userData?['profileImage'];
+                      final profilePicUrl = userData?['profileImage'];
 
-                  return CircleAvatar(
-                    radius: avatarRadius,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: (profilePicUrl != null && profilePicUrl.toString().isNotEmpty)
-                        ? NetworkImage(profilePicUrl)
-                        : null,
-                    child: (profilePicUrl == null || profilePicUrl.toString().isEmpty)
-                        ? const Icon(Icons.person, color: Colors.white)
-                        : null,
-                  );
-                },
-              ),
+                      return CircleAvatar(
+                        radius: avatarRadius,
+                        backgroundColor: Colors.grey[300],
+                        backgroundImage: (profilePicUrl != null &&
+                                profilePicUrl.toString().isNotEmpty)
+                            ? NetworkImage(profilePicUrl)
+                            : null,
+                        child: (profilePicUrl == null ||
+                                profilePicUrl.toString().isEmpty)
+                            ? const Icon(Icons.person, color: Colors.white)
+                            : null,
+                      );
+                    },
+                  ),
                   title: Text(
-                    chatUser['chatWithName'],
+                    chatUser['chatWithName'] ?? 'Unknown User',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: screenWidth * 0.045,
@@ -110,30 +154,33 @@ class _ChatUsersScreenState extends State<ChatUsersScreen> {
                   ),
                   subtitle: chatUser['lastMessage'] != null
                       ? Text(
-                    chatUser['lastMessage'],
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: screenWidth * 0.035,
-                    ),
-                  )
+                          chatUser['lastMessage'],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: screenWidth * 0.035,
+                          ),
+                        )
                       : null,
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
+                      const Icon(Icons.arrow_forward_ios_rounded,
+                          size: 16, color: Colors.grey),
                       const SizedBox(height: 5),
                       if ((chatUser['unreadCount'] ?? 0) > 0)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
                             color: Colors.redAccent,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             chatUser['unreadCount'].toString(),
-                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 12),
                           ),
                         ),
                     ],
